@@ -16,5 +16,5 @@ NEWSPIDER_MODULE = 'around.spiders'
 
 
 ITEM_PIPELINES = [
-    'around.pipeline.FillCoords',
+    'around.pipelines.FillCoords',
 ]
