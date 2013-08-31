@@ -17,4 +17,5 @@ NEWSPIDER_MODULE = 'around.spiders'
 
 ITEM_PIPELINES = [
     'around.pipelines.FillCoords',
+    'around.pipelines.ElasticSearchSave',
 ]
