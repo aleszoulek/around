@@ -4,9 +4,9 @@ from elasticsearch import Elasticsearch
 
 class FillCoords(object):
     coords = {
-        u'Z\xe1mek Dob\u0159ichovice - Dob\u0159ichovice': (1,2),
-        u'Lumen - domek Jeka - Palack\xe9ho 147, Dob\u0159ichovice': (20, 30),
-        u'kostel Karl\xedk - Karl\xedk': (50,60),
+        u'Z\xe1mek Dob\u0159ichovice - Dob\u0159ichovice': (49.9262642, 14.2748719),
+        u'Lumen - domek Jeka - Palack\xe9ho 147, Dob\u0159ichovice': (49.9267081, 14.2750847),
+        u'kostel Karl\xedk - Karl\xedk': (49.9356092, 14.2613125),
     }
     def process_item(self, item, spider):
         if item['venue'] in self.coords:
