@@ -6,6 +6,10 @@
 from scrapy.item import Item, Field
 
 class EventItem(Item):
+    date_from = Field()
+    date_to = Field()
+    time_from = Field()
+    time_to = Field()
     name = Field()
     venue = Field()
     source = Field()

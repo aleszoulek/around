@@ -1,3 +1,5 @@
+from datetime import date, time, datetime
+
 from elasticsearch import Elasticsearch
 
 
@@ -19,21 +21,29 @@ class ElasticSearchSave(object):
 
 
     def process_item(self, item, spider):
+        data = {
+            "date_from": item['date_from'],
+            "date_to": item['date_to'],
+            "name": item['name'],
+            "venue": item['venue'],
+            "source": item['source'],
+            "link": item['link'],
+            "coords": {
+                'lat': item['coords_lat'],
+                'lon': item['coords_lon'],
+            }
+        }
+        for field in ('time_from', 'time_to', 'description'):
+            if item[field]:
+                data[field] = item[field]
+                if isinstance(data[field], time):
+                    data[field] = data[field].strftime("%H:%M:%S")
+
         self.client.index(
             "around",
             "event",
-            {
-                "name": item['name'],
-                "venue": item['venue'],
-                "source": item['source'],
-                "description": item['description'],
-                "link": item['link'],
-                "coords": {
-                    'lat': item['coords_lat'],
-                    'lon': item['coords_lon'],
-                },
-            },
+            data,
             id='%s-%s' % (item['source'], item['id']),
         )
-        return item
+        return data
 

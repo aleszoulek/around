@@ -1,3 +1,4 @@
+from datetime import datetime, date, time
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 
@@ -16,6 +17,14 @@ class DobrichoviceSpider(BaseSpider):
         event_items = []
         for event in events:
             event_item = EventItem()
+            (
+                event_item['date_from'],
+                event_item['date_to'],
+                event_item['time_from'],
+                event_item['time_to'],
+            ) = self.parse_date(
+                event.select("dl[@class='data readable_item']").select('dd/text()')[0].extract()
+            )
             event_item['name'] = event.select('h3/a/text()').extract()[0]
             event_item['venue'] = event.select("dl[@class='misto readable_item readable_pause']").select('dd/text()').extract()[0]
             event_item['source'] = self.name
@@ -24,4 +33,12 @@ class DobrichoviceSpider(BaseSpider):
             event_item['id'] = event.select("a/@name").extract()[0]
             event_items.append(event_item)
         return event_items
+
+    def parse_date(self, raw):
+        raw = raw.strip()
+        dt = datetime.strptime(raw, '%d. %m. %Y')
+        return dt.date(), dt.date(), None, None
+
+        #return date.today(), date.today(), None, None
+        return date.today(), date.today(), datetime.now().time(), datetime.now().time()
 
