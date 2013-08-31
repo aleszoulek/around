@@ -13,4 +13,4 @@ class EventItem(Item):
     link = Field()
     id = Field()
     coords_lat = Field()
-    coords_long = Field()
+    coords_lon = Field()

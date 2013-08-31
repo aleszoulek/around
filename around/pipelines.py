@@ -10,7 +10,7 @@ class FillCoords(object):
     }
     def process_item(self, item, spider):
         if item['venue'] in self.coords:
-            item['coords_lat'], item['coords_long'] = self.coords[item['venue']]
+            item['coords_lat'], item['coords_lon'] = self.coords[item['venue']]
         return item
 
 
@@ -28,8 +28,12 @@ class ElasticSearchSave(object):
                 "source": item['source'],
                 "description": item['description'],
                 "link": item['link'],
-                "coords": (item['coords_long'], item['coords_lat']),
+                "coords": {
+                    'lat': item['coords_lat'],
+                    'lon': item['coords_lon'],
+                },
             },
             id='%s-%s' % (item['source'], item['id']),
         )
+        return item
 
