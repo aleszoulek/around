@@ -12,9 +12,11 @@
 
   var resultTemplate = Handlebars.compile('\
     <tr class="result-row" id={{id}}>\
+      <td nowrap="nowrap">\
+        {{date_from_human}}{{#if more_days }} - {{date_to_human}}{{/if}}\
+        {{#if time_from }}od {{time_from}}{{/if}} {{#if time_to }} do {{time_to}}{{/if}}\
+      </td>\
       <td><a href="{{link}}">{{name}}</a></td>\
-      <td>{{date_from}} - {{date_to}}</td>\
-      <td>{{time_from}} - {{time_to}}</td>\
       <td>{{description}}</td>\
       <td>{{venue}}</td>\
     </tr>\
@@ -125,7 +127,13 @@
             }
           }
         }
-      }
+      },
+      "sort" : [
+        { "date_from" : "asc" },
+        { "time_from" : "asc" },
+        "_score"
+        ],
+
     });
 
     jQuery.ajax(hash);
@@ -135,6 +143,11 @@
     json['hits']['hits'].map(function(i){
       var src = i['_source'];
       src.id = i["_id"];
+      src.more_days = !(src.date_from == src.date_to)
+      src.date_from = new Date(src.date_from)
+      src.date_to = new Date(src.date_from)
+      src.date_from_human = $.formatDateTime('d. m.', src.date_from)
+      src.date_to_human = $.formatDateTime('d. m.', src.date_from)
       src.formatted_lat = Math.round(src.coords.lat * 1000000) / 1000000;
       src.formatted_lon = Math.round(src.coords.lon * 1000000) / 1000000;
       $('#results').append(resultTemplate(src));
