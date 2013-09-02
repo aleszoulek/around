@@ -121,6 +121,8 @@
     hash.success = processResults;
     hash.error = function(arg) { console.error('ajax error: ', arg) };
 
+    date_from = $.formatDateTime("yy-mm-dd", strptime(datepicker_from.data().date, "%d.%m.%Y"))
+    date_to = $.formatDateTime("yy-mm-dd", strptime(datepicker_to.data().date, "%d.%m.%Y"))
     hash.data = JSON.stringify({
       "from" : 0,
       "size" : max_results,
@@ -128,10 +130,24 @@
         "filtered" : {
           "query" : { "match_all" : {} },
           "filter" : {
-            "geo_distance" : {
-                "distance" : (1.00 * kms_radius) + "km",
-                "event.coords" : { "lat" : centerPt.lat(), "lon" : centerPt.lng() }
-            }
+            "and": [
+              {
+                "geo_distance" : {
+                  "distance" : (1.00 * kms_radius) + "km",
+                  "event.coords" : { "lat" : centerPt.lat(), "lon" : centerPt.lng() }
+                }
+              },
+              {
+                "range" : {
+                  "event.date_from" : { "from" : date_from }
+                }
+              },
+              {
+                "range" : {
+                  "event.date_to" : { "to" : date_to }
+                }
+              }
+            ]
           }
         }
       },
