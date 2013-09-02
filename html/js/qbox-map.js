@@ -31,13 +31,11 @@
     $('#max_results').html('(prvnich ' + max_results + ')');
 
     centerPt = new google.maps.LatLng(49.9262642, 14.2748719);
-
     var mapOptions = {
       center: centerPt,
       zoom: 12,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-
     map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
     var circleOptions = {
@@ -51,9 +49,7 @@
       center: centerPt,
       radius: kms_radius * 1000
     };
-
     searchCircle = new google.maps.Circle(circleOptions);
-    
     google.maps.event.addListener(searchCircle, 'mouseup', handleCenterChange);
 
     var sliderOptions = {
@@ -67,12 +63,23 @@
       handle: 'round',
       formater: formatRadius
     };
-
     radiusSlider = $('#radius-slider').slider(sliderOptions);
     radiusSlider.on('slideStop', updateRadius);
     radiusSlider.on('slide', circleFeedback);
-
     radiusSlider.slider('setValue', kms_radius);
+
+    var nowTemp = new Date();
+    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+    var datepickerOptions = {
+      weekStart: 1,
+      onRender: function(date) {
+        return date.valueOf() < now.valueOf() ? 'disabled' : '';
+      }
+    }
+    datepicker_from = $('.datepicker_from').datepicker(datepickerOptions);
+    datepicker_from.on('changeDate', getResults);
+    datepicker_to = $('.datepicker_to').datepicker(datepickerOptions);
+    datepicker_to.on('changeDate', getResults);
 
     getResults();
   }
@@ -144,18 +151,15 @@
       var src = i['_source'];
       src.id = i["_id"];
       src.more_days = !(src.date_from == src.date_to)
-      src.date_from = new Date(src.date_from)
-      src.date_to = new Date(src.date_from)
-      src.date_from_human = $.formatDateTime('d. m.', src.date_from)
-      src.date_to_human = $.formatDateTime('d. m.', src.date_from)
-      src.formatted_lat = Math.round(src.coords.lat * 1000000) / 1000000;
-      src.formatted_lon = Math.round(src.coords.lon * 1000000) / 1000000;
+      src.date_from_human = $.formatDateTime('d. m.', new Date(src.date_from))
+      src.date_to_human = $.formatDateTime('d. m.', new Date(src.date_from))
       $('#results').append(resultTemplate(src));
       var marker = new google.maps.Marker({
         map: map,
         draggable: false,
+        optimized: false,
         position: new google.maps.LatLng(src.coords.lat, src.coords.lon),
-        title: [src.first_name, src.last_name].join(' ')
+        title: [src.name, src.source].join(' ')
       });
       marker.id = src.id;
       google.maps.event.addListener(marker, 'click', handleMarkerClick);
