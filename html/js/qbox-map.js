@@ -13,7 +13,7 @@
   var resultTemplate = Handlebars.compile('\
     <tr class="result-row" id={{id}}>\
       <td nowrap="nowrap">\
-        {{date_from_human}}{{#if more_days }} - {{date_to_human}}{{/if}}\
+        {{date_from_human}}{{#if more_days }} - {{date_to_human}}{{/if}}<br />\
         {{#if time_from }}od {{time_from}}{{/if}} {{#if time_to }} do {{time_to}}{{/if}}\
       </td>\
       <td><a href="{{link}}">{{name}}</a></td>\
@@ -39,18 +39,19 @@
     map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
     var circleOptions = {
-      draggable: true,
-      strokeColor: '#FF0000',
+      draggable: false,
+      strokeColor: '#FFFF00',
       strokeOpacity: 0.8,
       strokeWeight: 2,
-      fillColor: '#FF0000',
-      fillOpacity: 0.35,
+      fillColor: '#aaaa00',
+      fillOpacity: 0.25,
       map: map,
       center: centerPt,
       radius: kms_radius * 1000
     };
     searchCircle = new google.maps.Circle(circleOptions);
-    google.maps.event.addListener(searchCircle, 'mouseup', handleCenterChange);
+    google.maps.event.addListener(map, 'click', handleCenterChange);
+    google.maps.event.addListener(searchCircle, 'click', handleCenterChange);
 
     var sliderOptions = {
       min: kms_step,
@@ -70,6 +71,7 @@
 
     var nowTemp = new Date();
     var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+    var seven_days_ahead = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate()+7, 0, 0, 0, 0);
     var datepickerOptions = {
       weekStart: 1,
       onRender: function(date) {
@@ -77,9 +79,11 @@
       }
     }
     datepicker_from = $('.datepicker_from').datepicker(datepickerOptions);
+    datepicker_from.datepicker('setValue', now)
     datepicker_from.on('changeDate', getResults);
     datepicker_to = $('.datepicker_to').datepicker(datepickerOptions);
     datepicker_to.on('changeDate', getResults);
+    datepicker_to.datepicker('setValue', seven_days_ahead)
 
     getResults();
   }
@@ -100,10 +104,11 @@
     return val + " km";
   }
 
-  function handleCenterChange() {
-    var pt = searchCircle.getCenter();
+  function handleCenterChange(a) {
+    var pt = a.latLng;
     if (pt != centerPt){
       centerPt = pt;
+      searchCircle.setCenter(centerPt);
       getResults();
     }
   }
@@ -154,6 +159,9 @@
       "sort" : [
         { "date_from" : "asc" },
         { "time_from" : "asc" },
+        { "date_to" : "asc" },
+        { "venue" : "asc" },
+        { "name" : "asc" },
         "_score"
         ],
 
@@ -168,7 +176,7 @@
       src.id = i["_id"];
       src.more_days = !(src.date_from == src.date_to)
       src.date_from_human = $.formatDateTime('d. m.', new Date(src.date_from))
-      src.date_to_human = $.formatDateTime('d. m.', new Date(src.date_from))
+      src.date_to_human = $.formatDateTime('d. m.', new Date(src.date_to))
       $('#results').append(resultTemplate(src));
       var marker = new google.maps.Marker({
         map: map,
