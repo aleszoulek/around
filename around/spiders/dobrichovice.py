@@ -64,6 +64,10 @@ class DobrichoviceSpider(BaseSpider):
                 (?P<day_from>\d+)\.\ *(?P<month_from>\d+)\.\ *(?P<year_from>\d+)\ *$''', # 31. 2. 2013
             r'''^\ *
                 (?P<day_from>\d+)\.\ *(?P<month_from>\d+)\.\ *(?P<year_from>\d+)
+                \ *[^\ ]*\ od\ *(?P<hour_from>\d+):(?P<minute_from>\d+)
+                \ *$''', # 3. 11. 2013 za\u010d\xe1tek od 16:00
+            r'''^\ *
+                (?P<day_from>\d+)\.\ *(?P<month_from>\d+)\.\ *(?P<year_from>\d+)
                 \ *od\ *(?P<hour_from>\d+):(?P<minute_from>\d+)
                 \ *do\ *(?P<hour_to>\d+):(?P<minute_to>\d+)
                 \ *$''', # 22. 12. 2013 od 10:00 do 16:30
