@@ -14,6 +14,7 @@ class FillCoords(object):
         u'S\xe1l Dr. F\xfcrsta - Dob\u0159ichovice': (49.9258303, 14.2723569),
         u'Dob\u0159ichovice - Dob\u0159ichovice': (49.9270781, 14.2748739),
         u'iLumen - Dob\u0159ichovice': DropItem,
+        u'Hala Bios - Dob\u0159ichovice': (49.9291781, 14.2726686),
         # Karlik
         u'kostel Karl\xedk - Karl\xedk': (49.9356092, 14.2613125),
         u'Karl\xedk - Karl\xedk': (49.9361600, 14.2616664),
@@ -51,7 +52,7 @@ class FillCoords(object):
         u'Restaurace Kam\xednka - Nad Kam\xednkou 1523, Praha Zbraslav': (49.9641281, 14.3884586),
         # Cernosice
         u'Club Kino - F\xfcgnerova 263, \u010cerno\u0161ice': (49.9589458, 14.3190989),
-        
+
     }
     def process_item(self, item, spider):
         if item['venue'] in self.coords:
