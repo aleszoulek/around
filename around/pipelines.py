@@ -60,6 +60,10 @@ class FillCoords(object):
             if coords is DropItem:
                 raise DropItem(item['venue'])
             item['coords_lat'], item['coords_lon'] = coords
+            item['coords_approximate'] = False
+        else:
+            item['coords_lat'], item['coords_lon'] = spider.default_coords
+            item['coords_approximate'] = True
         return item
 
 
@@ -78,7 +82,8 @@ class ElasticSearchSave(object):
             "coords": {
                 'lat': item['coords_lat'],
                 'lon': item['coords_lon'],
-            }
+            },
+            "coords_approximate": item['coords_approximate'],
         }
         for field in ('time_from', 'time_to', 'description'):
             if item[field]:

@@ -48,6 +48,10 @@ curl -XPUT 'http://localhost:9200/around/event/_mapping' -d '
                 "type" : "geo_point",
                 "lat_lon": "yes",
                 "store" : "yes"
+            },
+            "coords_approximate" : {
+                "type" : "boolean",
+                "store" : "yes"
             }
         }
     }

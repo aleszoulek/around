@@ -18,3 +18,4 @@ class EventItem(Item):
     id = Field()
     coords_lat = Field()
     coords_lon = Field()
+    coords_approximate = Field()

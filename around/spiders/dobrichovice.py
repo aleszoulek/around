@@ -14,6 +14,7 @@ class DobrichoviceSpider(BaseSpider):
         'http://www.dobrichovice.cz/kultura/kultura-v-dobrichovicich/',
         'http://www.dobrichovice.cz/kultura/kultura-v-okolnich-obcich/',
     ]
+    default_coords = (49.9262642, 14.2748719)
 
     def build_url(self, href):
         if href.startswith(('http://', 'https://')):

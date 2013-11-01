@@ -11,6 +11,7 @@ class RoudniceSpider(BaseSpider):
     start_urls = [
         'http://www.roudnicenl.cz/mesto/kalendar-akci',
     ]
+    default_coords = (50.4241786, 14.2602997)
 
     def get_nodes(self, hxs):
         events = hxs.select("//div[@id='floatbug']/div/div")
